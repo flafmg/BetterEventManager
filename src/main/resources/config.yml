@@ -1,0 +1,47 @@
+spectatorChatPrefix: "&7[&cSpec&7] &f"  # Prefixo do chat de espectadores
+specJoinWhenFull: false  # Permitir que jogadores entrem como espectadores quando o servidor estiver cheio pelo /maxplayers
+
+#lista de mobs que sao ignorados pelo pvm
+pvmWhiteList:
+  - "NONE"
+  # - "ZOMBIE" [exemplo]
+
+
+# Configurações de eventos
+events:
+  build: true
+  pvp: true
+  chat: true
+  drop: true
+  pickup: true
+  damage: true
+  pvm: true
+  hck: false
+  hcd: false
+  interact: true
+  maxplayers: false
+  specchat: false
+  specchatbypass: false
+  specchatpublic: false
+
+# Configurações de bypass
+bypass:
+  build: []
+  pvp: []
+  chat: []
+  drop: []
+  pickup: []
+  damage: []
+  pvm: []
+  hck: []
+  hcd: []
+  interact: []
+  maxplayers: []
+  specchat: []
+  specchatbypass: []
+  specchatpublic: []
+
+# Opção para salvar automaticamente as alterações dos eventos
+autoSaveEventChanges: false
+# Opção para salvar automaticamente as alterações da lista de bypass
+autoSaveBypassChanges: false

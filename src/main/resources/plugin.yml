@@ -1,0 +1,170 @@
+name: BetterEventManager
+version: @build.date@
+main: me.flafmg.bem.BetterEventManager
+api-version: '1.16'
+prefix: BEM
+authors: [ flafmg ]
+description: A event manager plugin to enchance your videos/strams!
+
+commands:
+  status:
+    description: Shows the status of events and bypass players.
+    usage: /status [event]
+  build:
+    description: Toggles build mode for players.
+    usage: /build
+  chat:
+    description: Toggles chat mode for players.
+    usage: /chat
+  damage:
+    description: Toggles damage mode for players.
+    usage: /damage
+  drop:
+    description: Toggles item drop mode for players.
+    usage: /drop
+  hcd:
+    description: Toggles hardcore death mode for players.
+    usage: /hcd
+    aliases:
+      - hardcoredeath
+  hck:
+    description: Toggles hardcore kick mode for players.
+    usage: /hck
+    aliases:
+      - hardcorekick
+  pickup:
+    description: Toggles item pickup mode for players.
+    usage: /pickup
+  pvp:
+    description: Toggles PvP mode for players.
+    usage: /pvp
+  pvm:
+    description: Toggles PvM mode for players.
+    usage: /pvm
+  setspec:
+    description: Sets a player as a spectator.
+    usage: /setspec <player> [-s]
+    aliases:
+      - matar
+  revive:
+    description: Revives a spectator player.
+    usage: /revive <player> [-s]
+    aliases:
+      - reviver
+  chatclear:
+    description: Clears the chat for all players.
+    usage: /chatclear [-s]
+  dropclear:
+    description: Clears all dropped items in the world.
+    usage: /dropclear [-s]
+  smite:
+    description: Strikes a player with lightning without causing damage.
+    usage: /smite <player> [-s]
+  glow:
+    description: Applies a glowing effect to a player with an optional color.
+    usage: /glow <player> [color] [-s]
+  all:
+    description: Toggles all event modes for players.
+    usage: /all
+  maxplayers:
+    description: Manages the maximum number of players.
+    usage: /maxplayers <on|off|get|set> [count] [-s]
+  reloadconfig:
+    description: Reloads the config.
+    usage: /reloadconfig
+  interact:
+    description: Allows player to interact with the world.
+    usage: /interact
+  removeallbypass:
+    description: Remove all bypass permissions from a player or all players.
+    usage: /removeallbypass <player/*>
+    aliases:
+      - rab
+      - removeAdded
+
+permissions:
+  bettereventmanager.command.build:
+    description: Allows the use of the /build command.
+    default: op
+  bettereventmanager.command.chat:
+    description: Allows the use of the /chat command.
+    default: op
+  bettereventmanager.command.damage:
+    description: Allows the use of the /damage command.
+    default: op
+  bettereventmanager.command.drop:
+    description: Allows the use of the /drop command.
+    default: op
+  bettereventmanager.command.hcd:
+    description: Allows the use of the /hcd command.
+    default: op
+  bettereventmanager.command.hck:
+    description: Allows the use of the /hck command.
+    default: op
+  bettereventmanager.command.pickup:
+    description: Allows the use of the /pickup command.
+    default: op
+  bettereventmanager.command.pvp:
+    description: Allows the use of the /pvp command.
+    default: op
+  bettereventmanager.command.pvm:
+    description: Allows the use of the /pvm command.
+    default: op
+  bettereventmanager.command.setspec:
+    description: Allows the use of the /setspec command.
+    default: op
+  bettereventmanager.command.revive:
+    description: Allows the use of the /revive command.
+    default: op
+  bettereventmanager.command.chatclear:
+    description: Allows the use of the /chatclear command.
+    default: op
+  bettereventmanager.command.dropclear:
+    description: Allows the use of the /dropclear command.
+    default: op
+  bettereventmanager.command.smite:
+    description: Allows the use of the /smite command.
+    default: op
+  bettereventmanager.command.glow:
+    description: Allows the use of the /glow command.
+    default: op
+  bettereventmanager.command.all:
+    description: Allows the use of the /all command.
+    default: op
+  bettereventmanager.command.maxplayers:
+    description: Allows the use of the /maxplayers command.
+    default: op
+
+  bettereventmanager.bypass.build:
+    description: Allows bypassing of the /build command.
+    default: op
+  bettereventmanager.bypass.chat:
+    description: Allows bypassing of the /chat command.
+    default: op
+  bettereventmanager.bypass.damage:
+    description: Allows bypassing of the /damage command.
+    default: op
+  bettereventmanager.bypass.drop:
+    description: Allows bypassing of the /drop command.
+    default: op
+  bettereventmanager.bypass.hcd:
+    description: Allows bypassing of the /hcd command.
+    default: op
+  bettereventmanager.bypass.hck:
+    description: Allows bypassing of the /hck command.
+    default: op
+  bettereventmanager.bypass.pickup:
+    description: Allows bypassing of the /pickup command.
+    default: op
+  bettereventmanager.bypass.pvp:
+    description: Allows bypassing of the /pvp command.
+    default: op
+  bettereventmanager.bypass.pvm:
+    description: Allows bypassing of the /pvm command.
+    default: op
+  bettereventmanager.bypass.specchat:
+      description: Allows bypassing of the spectator chat.
+      default: op
+  bettereventmanager.command.reloadconfig:
+    description: Allows the use of the /reloadconfig command.
+    default: op
