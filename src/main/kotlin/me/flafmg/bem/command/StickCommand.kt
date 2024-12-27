@@ -57,7 +57,7 @@ class StickCommand(messagesConfig: ConfigManager) : BaseCommand("stick", message
             return
         }
 
-        stick.addUnsafeEnchantment(enchantment, level)
+        stick.addUnsafeEnchantment(enchantment, level.coerceAtMost(255))
         player.inventory.addItem(stick)
         sendMessage(player, messagesConfig.getString("messages.stick.execution")!!
             .replace("{enchantment}", args.get("enchantment") as String)
