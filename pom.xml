@@ -113,7 +113,6 @@
                     <relocations>
                         <relocation>
                             <pattern>dev.jorel.commandapi</pattern>
-                            <!-- TODO: Change this to my own package name -->
                             <shadedPattern>me.flafmg.bem.commandapi</shadedPattern>
                         </relocation>
                     </relocations>
