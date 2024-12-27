@@ -1,56 +1,50 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.manager.SpectatorManager
-import me.flafmg.bem.util.*
-import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import me.flafmg.bem.util.broadcastToPlayers
+import me.flafmg.bem.util.genericLog
+import me.flafmg.bem.util.getOnlinePlayers
+import me.flafmg.bem.util.sendMessage
+import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class SetSpecCommand(private val messagesConfig: ConfigManager) : CommandExecutor, TabCompleter {
+class SetSpecCommand(messagesConfig: ConfigManager) : BaseCommand("setspec", messagesConfig, aliases = listOf("matar")) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("bettereventmanager.command.setspec")) {
-            sendMessage(sender, messagesConfig.getString("messages.system.noPermission"))
-            return true
-        }
+    init {
+        baseCommand.withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+            .executes(CommandExecutor { sender, args ->
+                handleSetSpec(sender, args)
+            })
+    }
 
-        if (args.isEmpty()) {
-            sendUsage(sender)
-            return true
-        }
-
-        val target = Bukkit.getPlayer(args[0])
-        if (target == null) {
+    private fun handleSetSpec(sender: CommandSender, args: CommandArguments) {
+        val targets = args.get("targets") as Collection<Player>
+        if (targets.isEmpty()) {
             sendMessage(sender, messagesConfig.getString("messages.system.playerNotFound"))
-            return true
-        }
-        if(SpectatorManager.isSpectator(target.uniqueId)) {
-            sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("target" to target.name))
-            return true;
-        }
-        SpectatorManager.addPlayer(target.uniqueId)
-        sendMessage(sender, messagesConfig.getString("messages.setspec.execution"), mutableMapOf("target" to target.name))
-        sendMessage(target, messagesConfig.getString("messages.setspec.targetMessage"))
-        if (!args.contains("-s")) {
-            broadcastToPlayers(messagesConfig.getString("messages.setspec.announce"), getOnlinePlayers(), mutableMapOf("target" to target.name))
+            return
         }
 
-        genericLog(sender, "/setspec ${args.joinToString(" ")}", messagesConfig)
-        return true
-    }
+        targets.forEach { target ->
+            if (SpectatorManager.isSpectator(target.uniqueId)) {
+                sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("targets" to target.name))
+                return
+            }
 
-    private fun sendUsage(sender: CommandSender) {
-        sendMessage(sender, messagesConfig.getString("messages.system.invalidUsage"), mutableMapOf("usage" to "/setspec <player> [-s]"))
-    }
+            SpectatorManager.addPlayer(target.uniqueId)
+            sendMessage(sender, messagesConfig.getString("messages.setspec.execution"), mutableMapOf("targets" to target.name))
+            sendMessage(target, messagesConfig.getString("messages.setspec.targetMessage"))
+            if (!super.hasSilent) {
+                broadcastToPlayers(messagesConfig.getString("messages.setspec.announce"),
+                    getOnlinePlayers(), mutableMapOf("targets" to target.name))
+            }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
-        if (args.size == 1) {
-            return Bukkit.getOnlinePlayers().filter { !SpectatorManager.isSpectator(it.uniqueId) }.map { it.name }
+            genericLog(sender, "setspec ${target.name}", messagesConfig)
         }
-        return emptyList()
     }
 }

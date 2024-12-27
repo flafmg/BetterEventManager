@@ -41,7 +41,7 @@ fun targetEventLog(sender: CommandSender, target: Player, eventType: EventType, 
         "remove" -> messagesConfig.getString("messages.system.genericLog.removed")
         else -> return
     }
-    val placeholders = mutableMapOf("player" to sender.name, "target" to target.name, "event" to eventType.name.lowercase())
+    val placeholders = mutableMapOf("player" to sender.name, "targets" to target.name, "event" to eventType.name.lowercase())
     broadcastToPlayers(logMessage, getOnlinePlayers().filter { it.hasPermission("bem.command.log") }, placeholders)
 }
 
@@ -51,7 +51,7 @@ fun effectLog(sender: CommandSender, target: Player, effect: String, action: Str
         "remove" -> messagesConfig.getString("messages.system.genericLog.effectRemoved")
         else -> return
     }
-    val placeholders = mutableMapOf("player" to sender.name, "target" to target.name, "effect" to effect)
+    val placeholders = mutableMapOf("player" to sender.name, "targets" to target.name, "effect" to effect)
     broadcastToPlayers(logMessage, getOnlinePlayers().filter { it.hasPermission("bem.command.log") }, placeholders)
 }
 

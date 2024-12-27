@@ -1,95 +1,89 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.IntegerArgument
+import dev.jorel.commandapi.arguments.StringArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.manager.EventManager
 import me.flafmg.bem.manager.EventType
 import me.flafmg.bem.manager.MaxPlayersManager
-import me.flafmg.bem.util.sendMessage
 import me.flafmg.bem.util.broadcastToPlayers
-import me.flafmg.bem.util.getOnlinePlayers
 import me.flafmg.bem.util.genericLog
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import me.flafmg.bem.util.getOnlinePlayers
+import me.flafmg.bem.util.sendMessage
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 
-class MaxPlayersCommand(private val messagesConfig: ConfigManager) : CommandExecutor, TabCompleter {
+class MaxPlayersCommand(messagesConfig: ConfigManager) : BaseCommand("maxplayers", messagesConfig) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("bettereventmanager.command.maxplayers")) {
-            sendMessage(sender, messagesConfig.getString("messages.system.noPermission"))
-            return true
-        }
-
-        if (args.isEmpty()) {
-            sendUsage(sender)
-            return true
-        }
-
-        val silent = args.contains("-s")
-        when (args[0].lowercase()) {
-            "on" -> {
-                if(EventManager.isEventEnabled(EventType.MAXPLAYERS)) {
-                    sendMessage(sender, messagesConfig.getString("messages.system.alreadyEnabled"))
-                    return true
-                }
-                EventManager.enableEvent(EventType.MAXPLAYERS)
-                sendMessage(sender, messagesConfig.getString("messages.maxplayers.enabled.execution"))
-                if (!silent) {
-                    broadcastToPlayers(messagesConfig.getString("messages.maxplayers.enabled.announce"), getOnlinePlayers())
-                }
-                genericLog(sender, "maxplayers on", messagesConfig)
-            }
-            "off" -> {
-                if(!EventManager.isEventEnabled(EventType.MAXPLAYERS)) {
-                    sendMessage(sender, messagesConfig.getString("messages.system.alreadyDisabled"))
-                    return true
-                }
-                EventManager.disableEvent(EventType.MAXPLAYERS)
-                sendMessage(sender, messagesConfig.getString("messages.maxplayers.disabled.execution"))
-                if (!silent) {
-                    broadcastToPlayers(messagesConfig.getString("messages.maxplayers.disabled.announce"), getOnlinePlayers())
-                }
-                genericLog(sender, "maxplayers off", messagesConfig)
-            }
-            "get" -> {
-                sendMessage(sender, messagesConfig.getString("messages.maxplayers.get.execution"), mutableMapOf("count" to MaxPlayersManager.getMaxPlayers().toString()))
-            }
-            "set" -> {
-                if (args.size < 2) {
-                    sendUsage(sender)
-                    return true
-                }
-                val count = args[1].toIntOrNull()
-                if (count == null || count < 0) {
-                    sendMessage(sender, messagesConfig.getString("messages.system.invalidArgument"))
-                    return true
-                }
-                MaxPlayersManager.setMaxPlayers(count)
-                sendMessage(sender, messagesConfig.getString("messages.maxplayers.set.execution"), mutableMapOf("count" to count.toString()))
-                if (!silent) {
-                    broadcastToPlayers(messagesConfig.getString("messages.maxplayers.set.announce"), getOnlinePlayers(), mutableMapOf("count" to count.toString()))
-                }
-                genericLog(sender, "maxplayers set $count", messagesConfig)
-            }
-            else -> sendUsage(sender)
-        }
-        return true
+    init {
+        baseCommand.withSubcommand(
+            CommandAPICommand("on")
+                .withArguments(StringArgument("silent").setOptional(true))
+                .executes(CommandExecutor { sender, args ->
+                    handleOn(sender, args)
+                })
+        )
+        baseCommand.withSubcommand(
+            CommandAPICommand("off")
+                .withArguments(StringArgument("silent").setOptional(true))
+                .executes(CommandExecutor { sender, args ->
+                    handleOff(sender, args)
+                })
+        )
+        baseCommand.withSubcommand(
+            CommandAPICommand("get")
+                .executes(CommandExecutor { sender, args ->
+                    handleGet(sender, args)
+                })
+        )
+        baseCommand.withSubcommand(
+            CommandAPICommand("set")
+                .withArguments(IntegerArgument("count"), StringArgument("silent").setOptional(true))
+                .executes(CommandExecutor { sender, args ->
+                    handleSet(sender, args)
+                })
+        )
     }
 
-    private fun sendUsage(sender: CommandSender) {
-        sendMessage(sender, messagesConfig.getString("messages.system.invalidUsage"), mutableMapOf("usage" to "/maxplayers <on|off|get|set> [count] [-s]"))
+    private fun handleOn(sender: CommandSender, args: CommandArguments) {
+        if (EventManager.isEventEnabled(EventType.MAXPLAYERS)) {
+            sendMessage(sender, messagesConfig.getString("messages.system.alreadyEnabled"))
+            return
+        }
+        EventManager.enableEvent(EventType.MAXPLAYERS)
+        sendMessage(sender, messagesConfig.getString("messages.maxplayers.enabled.execution"))
+        if (!super.hasSilent) {
+            broadcastToPlayers(messagesConfig.getString("messages.maxplayers.enabled.announce"), getOnlinePlayers())
+        }
+        genericLog(sender, "maxplayers on", messagesConfig)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String>? {
-        if (!sender.hasPermission("bettereventmanager.command.maxplayers")) {
-            return emptyList()
+    private fun handleOff(sender: CommandSender, args: CommandArguments) {
+        if (!EventManager.isEventEnabled(EventType.MAXPLAYERS)) {
+            sendMessage(sender, messagesConfig.getString("messages.system.alreadyDisabled"))
+            return
         }
+        EventManager.disableEvent(EventType.MAXPLAYERS)
+        sendMessage(sender, messagesConfig.getString("messages.maxplayers.disabled.execution"))
+        if (!super.hasSilent) {
+            broadcastToPlayers(messagesConfig.getString("messages.maxplayers.disabled.announce"), getOnlinePlayers())
+        }
+        genericLog(sender, "maxplayers off", messagesConfig)
+    }
 
-        return when (args.size) {
-            1 -> listOf("on", "off", "get", "set").filter { it.startsWith(args[0], ignoreCase = true) }
-            2 -> if (args[0].equals("set", ignoreCase = true)) listOf("<count>") else emptyList()
-            else -> emptyList()
+    private fun handleGet(sender: CommandSender, args: CommandArguments) {
+        sendMessage(sender, messagesConfig.getString("messages.maxplayers.get.execution"), mutableMapOf("count" to MaxPlayersManager.getMaxPlayers().toString()))
+    }
+
+    private fun handleSet(sender: CommandSender, args: CommandArguments) {
+        val count = args.get("count") as Int
+        MaxPlayersManager.setMaxPlayers(count)
+        sendMessage(sender, messagesConfig.getString("messages.maxplayers.set.execution"), mutableMapOf("count" to count.toString()))
+        if (!super.hasSilent) {
+            broadcastToPlayers(messagesConfig.getString("messages.maxplayers.set.announce"), getOnlinePlayers(), mutableMapOf("count" to count.toString()))
         }
+        genericLog(sender, "maxplayers set $count", messagesConfig)
     }
 }

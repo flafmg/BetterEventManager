@@ -1,84 +1,78 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.arguments.StringArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.manager.GlowManager
 import me.flafmg.bem.util.*
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class GlowCommand(private val messagesConfig: ConfigManager) : CommandExecutor, TabCompleter {
+class GlowCommand(messagesConfig: ConfigManager) : BaseCommand("glow", messagesConfig) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("bettereventmanager.command.glow")) {
-            sendMessage(sender, messagesConfig.getString("messages.system.noPermission"))
-            return true
-        }
+    init {
+        baseCommand.withSubcommand(
+            CommandAPICommand("set")
+                .withArguments(EntitySelectorArgument.ManyPlayers("targets"), StringArgument("color"), StringArgument("silent").setOptional(true))
+                .executes(CommandExecutor { sender, args ->
+                    handleSetGlow(sender, args)
+                })
+        )
+        baseCommand.withSubcommand(
+            CommandAPICommand("remove")
+                .withArguments(EntitySelectorArgument.ManyPlayers("targets"), StringArgument("silent").setOptional(true))
+                .executes(CommandExecutor { sender, args ->
+                    handleRemoveGlow(sender, args)
+                })
+        )
+    }
 
-        if (args.isEmpty()) {
-            sendUsage(sender)
-            return true
-        }
+    private fun handleSetGlow(sender: CommandSender, args: CommandArguments) {
+        val targets = args.get("targets") as Collection<Player>
+        val colorCode = args.get("color") as String
+        val color = ChatColor.getByChar(colorCode.replace("&", ""))
 
-        val target = Bukkit.getPlayer(args[0])
-        if (target == null) {
-            sendMessage(sender, messagesConfig.getString("messages.system.playerNotFound"))
-            return true
-        }
-
-        if (args.size > 1) {
-            if (args[1].equals("remove", ignoreCase = true) || args[1].equals("&r", ignoreCase = true)) {
-                if(GlowManager.hasGlow(target)) {
-                    GlowManager.removeGlow(target)
-                    sendMessage(sender, messagesConfig.getString("messages.glow.removed"), mutableMapOf("target" to target.name))
+        if (color != null) {
+            val targetNames = mutableListOf<String>()
+            targets.forEach { target ->
+                if (!GlowManager.hasGlow(target)) {
+                    GlowManager.setGlow(target, color)
+                    targetNames.add(target.name)
+                    genericLog(sender, "/glow set ${target.name} $colorCode", messagesConfig)
                 } else {
-                    sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"), mutableMapOf("target" to target.name))
-                    return true
-                }
-                sendMessage(sender, messagesConfig.getString("messages.glow.removed"), mutableMapOf("target" to target.name))
-            } else {
-                val colorCode = args[1]
-                val color = ChatColor.getByChar(colorCode.replace("&", ""))
-                if (color != null) {
-                    if(!GlowManager.hasGlow(target)) {
-                        GlowManager.setGlow(target, color)
-                        sendMessage(sender, messagesConfig.getString("messages.glow.removed"), mutableMapOf("target" to target.name))
-                    } else {
-                        sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("target" to target.name))
-                        return true
-                    }
-                    sendMessage(sender, messagesConfig.getString("messages.glow.execution"), mutableMapOf("target" to target.name, "color" to color.name))
-                } else {
-                    sendMessage(sender, messagesConfig.getString("messages.system.invalidArgument"))
+                    sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("targets" to target.name))
                 }
             }
+            if (targetNames.isNotEmpty()) {
+                val targetsS = targetNames.joinToString(",")
+                sendMessage(sender, messagesConfig.getString("messages.glow.execution"), mutableMapOf("targets" to targetsS, "color" to color.name))
+            }
         } else {
-            GlowManager.setGlow(target, null)
-            sendMessage(sender, messagesConfig.getString("messages.glow.execution"), mutableMapOf("target" to target.name, "color" to "default"))
+            sendMessage(sender, messagesConfig.getString("messages.system.invalidArgument"))
         }
-
-        if (!args.contains("-s")) {
-            broadcastToPlayers(messagesConfig.getString("messages.glow.announce"), getOnlinePlayers(), mutableMapOf("target" to target.name))
-        }
-
-        genericLog(sender, "/glow ${args.joinToString(" ")}", messagesConfig)
-        return true
     }
 
-    private fun sendUsage(sender: CommandSender) {
-        sendMessage(sender, messagesConfig.getString("messages.system.invalidUsage"), mutableMapOf("usage" to "/glow <player> [color|remove] [-s]"))
-    }
+    private fun handleRemoveGlow(sender: CommandSender, args: CommandArguments) {
+        val targets = args.get("targets") as Collection<Player>
+        val targetNames = mutableListOf<String>()
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
-        if (args.size == 1) {
-            return Bukkit.getOnlinePlayers().map { it.name }
-        } else if (args.size == 2) {
-            return ChatColor.values().map { "&${it.char}" } + "remove"
+        targets.forEach { target ->
+            if (GlowManager.hasGlow(target)) {
+                GlowManager.removeGlow(target)
+                targetNames.add(target.name)
+                genericLog(sender, "/glow remove ${target.name}", messagesConfig)
+            } else {
+                sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"), mutableMapOf("targets" to target.name))
+            }
         }
-        return emptyList()
+        if (targetNames.isNotEmpty()) {
+            val targetsS = targetNames.joinToString(",")
+            sendMessage(sender, messagesConfig.getString("messages.glow.removed"), mutableMapOf("targets" to targetsS))
+        }
     }
 }

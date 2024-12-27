@@ -7,12 +7,12 @@ messages:
       execution: "&cVocê desativou a construção."
       announce: "&bSERVER &f| A construção foi &cdesativada&f."
     added:
-      execution: "&aVocê deu permissão de construção para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para construir."
+      execution: "&aVocê deu permissão de construção para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para construir."
       targetMessage: "&aVocê recebeu permissão para construir."
     removed:
-      execution: "&cVocê removeu a permissão de construção de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de construção."
+      execution: "&cVocê removeu a permissão de construção de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de construção."
       targetMessage: "&cSua permissão para construir foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode construir aqui."
@@ -25,12 +25,12 @@ messages:
       execution: "&cVocê desativou o PvP."
       announce: "&bSERVER &f| O PvP foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de PvP para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para PvP."
+      execution: "&aVocê deu permissão de PvP para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para PvP."
       targetMessage: "&aVocê recebeu permissão para participar do PvP."
     removed:
-      execution: "&cVocê removeu a permissão de PvP de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de PvP."
+      execution: "&cVocê removeu a permissão de PvP de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de PvP."
       targetMessage: "&cSua permissão de PvP foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode atacar jogadores aqui."
@@ -43,22 +43,37 @@ messages:
       execution: "&cVocê desativou o chat."
       announce: "&bSERVER &f| O chat foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de chat para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para usar o chat."
+      execution: "&aVocê deu permissão de chat para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para usar o chat."
       targetMessage: "&aVocê recebeu permissão para usar o chat."
     removed:
-      execution: "&cVocê removeu a permissão de chat de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de chat."
+      execution: "&cVocê removeu a permissão de chat de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de chat."
       targetMessage: "&cSua permissão para usar o chat foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode falar no chat."
     specs:
-      on: "&aChat para espectadores ativado."
-      off: "&cChat para espectadores desativado."
-      bypassOn: "&aBypass do chat para espectadores ativado."
-      bypassOff: "&cBypass do chat para espectadores desativado."
-      private: "&aChat privado para espectadores ativado."
-      public: "&cChat privado para espectadores desativado."
+      enabled:
+        execution: "&aVocê ativou o chat para espectadores."
+        announce: "&bSERVER &f| O chat para espectadores foi &aativado&f."
+      disabled:
+        execution: "&cVocê desativou o chat para espectadores."
+        announce: "&bSERVER &f| O chat para espectadores foi &cdesativado&f."
+      bypassEnabled:
+        execution: "&aVocê ativou o bypass do chat para espectadores."
+        announce: "&bSERVER &f| O bypass do chat para espectadores foi &aativado&f."
+      bypassDisabled:
+        execution: "&cVocê desativou o bypass do chat para espectadores."
+        announce: "&bSERVER &f| O bypass do chat para espectadores foi &cdesativado&f."
+      privateEnabled:
+        execution: "&aVocê ativou o chat privado para espectadores."
+        announce: "&bSERVER &f| O chat privado para espectadores foi &aativado&f."
+      privateDisabled:
+        execution: "&cVocê desativou o chat privado para espectadores."
+        announce: "&bSERVER &f| O chat privado para espectadores foi &cdesativado&f."
+  togglespecchat:
+    enabled: "&aVocê ativou a visualisação do chat para espectadores."
+    disabled: "&cVocê desativou a visualisação o chat para espectadores."
 
   damage:
     enabled:
@@ -68,12 +83,12 @@ messages:
       execution: "&cVocê desativou o dano."
       announce: "&bSERVER &f| O dano foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de dano para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para receber dano."
+      execution: "&aVocê deu permissão de dano para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para receber dano."
       targetMessage: "&aVocê recebeu permissão para receber dano."
     removed:
-      execution: "&cVocê removeu a permissão de dano de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de recever dano."
+      execution: "&cVocê removeu a permissão de dano de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de recever dano."
       targetMessage: "&cSua permissão para recever dano foi revogada."
 
   drop:
@@ -84,12 +99,12 @@ messages:
       execution: "&cVocê desativou o drop de itens."
       announce: "&bSERVER &f| O drop de itens foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de drop para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para dropar itens."
+      execution: "&aVocê deu permissão de drop para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para dropar itens."
       targetMessage: "&aVocê recebeu permissão para dropar itens."
     removed:
-      execution: "&cVocê removeu a permissão de drop de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão para dropar itens."
+      execution: "&cVocê removeu a permissão de drop de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão para dropar itens."
       targetMessage: "&cSua permissão para dropar itens foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode dropar itens aqui."
@@ -102,12 +117,12 @@ messages:
       execution: "&cVocê desativou a coleta de itens."
       announce: "&bSERVER &f| A coleta de itens foi &cdesativada&f."
     added:
-      execution: "&aVocê deu permissão de coleta para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para coletar itens."
+      execution: "&aVocê deu permissão de coleta para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para coletar itens."
       targetMessage: "&aVocê recebeu permissão para coletar itens."
     removed:
-      execution: "&cVocê removeu a permissão de coleta de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de coleta de itens."
+      execution: "&cVocê removeu a permissão de coleta de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de coleta de itens."
       targetMessage: "&cSua permissão para coletar itens foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode coletar itens aqui."
@@ -120,12 +135,12 @@ messages:
       execution: "&cVocê desativou o PVM."
       announce: "&bSERVER &f| O PVM foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de PVM para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para PVM."
+      execution: "&aVocê deu permissão de PVM para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para PVM."
       targetMessage: "&aVocê recebeu permissão para participar do PVM."
     removed:
-      execution: "&cVocê removeu a permissão de PVM de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de PVM."
+      execution: "&cVocê removeu a permissão de PVM de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de PVM."
       targetMessage: "&cSua permissão de PVM foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode atacar mobs aqui."
@@ -138,12 +153,12 @@ messages:
       execution: "&cVocê desativou a interação."
       announce: "&bSERVER &f| A interação foi &cdesativada&f."
     added:
-      execution: "&aVocê deu permissão de interação para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para interagir."
+      execution: "&aVocê deu permissão de interação para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para interagir."
       targetMessage: "&aVocê recebeu permissão para interagir."
     removed:
-      execution: "&cVocê removeu a permissão de interação de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de interação."
+      execution: "&cVocê removeu a permissão de interação de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de interação."
       targetMessage: "&cSua permissão para interagir foi revogada."
     actionBlockedMessage: ""
     actionBlockedActionBar: "&cVocê não pode interagir aqui."
@@ -156,12 +171,12 @@ messages:
       execution: "&cVocê desativou o HardcoreDeath."
       announce: "&bSERVER &f| O HardcoreDeath foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de HardcoreDeath para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para HardcoreDeath."
+      execution: "&aVocê deu permissão de HardcoreDeath para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para HardcoreDeath."
       targetMessage: "&aVocê recebeu permissão de bypass do HardcoreDeath."
     removed:
-      execution: "&cVocê removeu a permissão de HardcoreDeath de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de HardcoreDeath."
+      execution: "&cVocê removeu a permissão de HardcoreDeath de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de HardcoreDeath."
       targetMessage: "&cSua permissão de bypass do HardcoreDeath foi revogada."
 
   hck:
@@ -172,12 +187,12 @@ messages:
       execution: "&cVocê desativou o HardcoreKick."
       announce: "&bSERVER &f| O HardcoreKick foi &cdesativado&f."
     added:
-      execution: "&aVocê deu permissão de HardcoreKick para &6{target}&a."
-      announce: "&bSERVER &f| &6{target}&f recebeu permissão para HardcoreKick."
+      execution: "&aVocê deu permissão de HardcoreKick para &6{targets}&a."
+      announce: "&bSERVER &f| &6{targets}&f recebeu permissão para HardcoreKick."
       targetMessage: "&aVocê recebeu permissão de bypass HardcoreKick."
     removed:
-      execution: "&cVocê removeu a permissão de HardcoreKick de &6{target}&c."
-      announce: "&bSERVER &f| &6{target}&f perdeu a permissão de HardcoreKick."
+      execution: "&cVocê removeu a permissão de HardcoreKick de &6{targets}&c."
+      announce: "&bSERVER &f| &6{targets}&f perdeu a permissão de HardcoreKick."
       targetMessage: "&cSua permissão de bypass do HardcoreKick foi revogada."
     kickMessage: "&cVocê foi eliminado do servidor. \nObrigado por participar"
 
@@ -205,13 +220,13 @@ messages:
       announce: "&bSERVER &f| Todos os eventos foram &cdesativados&f."
 
   setspec:
-    execution: "&aVocê colocou &6{target}&a no modo espectador."
-    announce: "&bSERVER &f| &6{target}&f foi colocado no modo espectador."
+    execution: "&aVocê colocou &6{targets}&a no modo espectador."
+    announce: "&bSERVER &f| &6{targets}&f foi colocado no modo espectador."
     targetMessage: "&aVocê foi colocado no modo espectador."
 
   revive:
-    execution: "&aVocê reviveu &6{target}&a."
-    announce: "&bSERVER &f| &6{target}&f foi revivido."
+    execution: "&aVocê reviveu &6{targets}&a."
+    announce: "&bSERVER &f| &6{targets}&f foi revivido."
     targetMessage: "&aVocê foi revivido."
 
   chatclear:
@@ -223,14 +238,17 @@ messages:
     announce: "&bSERVER &f| Os itens dropados foram limpos."
 
   smite:
-    execution: "&aVocê lançou um raio em &6{target}&a."
-    announce: "&bSERVER &f| Um raio foi lançado em &6{target}&f."
+    execution: "&aVocê lançou um raio em &6{targets}&a."
+    announce: "&bSERVER &f| Um raio foi lançado em &6{targets}&f."
     targetMessage: "&cUm raio foi lançado em você."
 
   glow:
-    execution: "&aVocê aplicou o efeito de glow em &6{target}&a com a cor &6{color}&a."
-    announce: "&bSERVER &f| &6{target}&f recebeu o efeito de glow."
-    removed: "&cVocê removeu o efeito de glow de &6{target}&c."
+    execution: "&aVocê aplicou o efeito de glow em &6{targets}&a com a cor &6{color}&a."
+    announce: "&bSERVER &f| &6{targets}&f recebeu o efeito de glow."
+    removed: "&cVocê removeu o efeito de glow de &6{targets}&c."
+
+  stick:
+    execution: "&aVocê recebeu um stick com {enchantment} nível {level}."
 
   status:
     header: "&bSERVER &f| Estado dos eventos"
@@ -243,8 +261,12 @@ messages:
     playerItem: "&7- {player}"
 
   removeallbypass:
-    all: "&aTodas as permissões de bypass foram removidas de todos os jogadores."
-    player: "&aTodas as permissões de bypass foram removidas de &6{player}&a."
+    event:
+      execution: "&aTodas as permissões de bypass foram removidas do evento &6{eventType}&a."
+    player:
+      execution: "&aTodas as permissões de bypass foram removidas de &6{targets}&a."
+    all:
+      execution: "&aTodas as permissões de bypass foram removidas de todos os eventos."
 
   reloadconfig:
     execution: "&aA configuração foi recarregada com sucesso."
@@ -264,8 +286,8 @@ messages:
     genericLog: # sera exibido para todos que tenham bem.command.log
       enabled: "&7LOG: {player} ativou {event}."
       disabled: "&7LOG: {player} desativou {event}."
-      added: "&7LOG: {player} deu permissão de bypass de {event} para {target}."
-      removed: "&7LOG: {player} removeu a permissão de bypass de {event} de {target}."
+      added: "&7LOG: {player} deu permissão de bypass de {event} para {targets}."
+      removed: "&7LOG: {player} removeu a permissão de bypass de {event} de {targets}."
       generic: "&7LOG: {player} executou {command}"
-      effectAdded: "&7LOG: {player} adicionou o efeito {effect} em {target}."
-      effectRemoved: "&7LOG: {player} removeu o efeito {effect} de {target}."
+      effectAdded: "&7LOG: {player} adicionou o efeito {effect} em {targets}."
+      effectRemoved: "&7LOG: {player} removeu o efeito {effect} de {targets}."

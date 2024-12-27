@@ -20,7 +20,7 @@ class PvmEventListener(private val messagesConfig: ConfigManager, private val ma
         val entity = event.entity
         if (damager is Player && entity !is Player) {
             val playerId: UUID = damager.uniqueId
-            val whitelist = mainConfig.getStringList("pvmWhiteList")?.map { EntityType.valueOf(it) }
+            val whitelist = mainConfig.getStringList("pvmWhiteList", suppressWarns = true)?.map { EntityType.valueOf(it) }
             if (!EventManager.isEventEnabled(EventType.PVM) &&
                 !damager.hasPermission("bettereventmanager.bypass.pvm") &&
                 !BypassManager.hasBypass(EventType.PVM, playerId) &&

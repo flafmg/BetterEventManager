@@ -33,14 +33,16 @@ class ConfigManager(private val plugin: JavaPlugin, private val resourceFileName
         }
     }
 
-    fun <T> get(key: String): T? {
+    fun <T> get(key: String, suppressWarns: Boolean = false): T? {
         return if (config.contains(key)) {
             config.get(key) as? T ?: run {
                 errLog("Value for key '$key' is not of expected type.")
                 null
             }
         } else {
-            warnLog("Key '$key' not found in configuration.")
+            if (!suppressWarns) {
+                warnLog("Key '$key' not found in configuration.")
+            }
             null
         }
     }
@@ -49,14 +51,14 @@ class ConfigManager(private val plugin: JavaPlugin, private val resourceFileName
         config.set(key, value)
     }
 
-    fun getString(key: String): String? = get(key)
-    fun getInt(key: String): Int? = get(key)
-    fun getBoolean(key: String): Boolean? = get(key)
-    fun getDouble(key: String): Double? = get(key)
-    fun getList(key: String): List<Any>? = get(key)
-    fun getStringList(key: String): List<String>? = get(key)
-    fun getIntList(key: String): List<Int>? = get(key)
-    fun getDoubleList(key: String): List<Double>? = get(key)
+    fun getString(key: String, suppressWarns: Boolean = false): String? = get(key, suppressWarns)
+    fun getInt(key: String, suppressWarns: Boolean = false): Int? = get(key, suppressWarns)
+    fun getBoolean(key: String, suppressWarns: Boolean = false): Boolean? = get(key, suppressWarns)
+    fun getDouble(key: String, suppressWarns: Boolean = false): Double? = get(key, suppressWarns)
+    fun getList(key: String, suppressWarns: Boolean = false): List<Any>? = get(key, suppressWarns)
+    fun getStringList(key: String, suppressWarns: Boolean = false): List<String>? = get(key, suppressWarns)
+    fun getIntList(key: String, suppressWarns: Boolean = false): List<Int>? = get(key, suppressWarns)
+    fun getDoubleList(key: String, suppressWarns: Boolean = false): List<Double>? = get(key, suppressWarns)
 
     fun save() {
         try {

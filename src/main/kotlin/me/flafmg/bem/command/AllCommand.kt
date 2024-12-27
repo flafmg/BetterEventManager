@@ -1,56 +1,51 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.manager.EventManager
 import me.flafmg.bem.manager.EventType
-import me.flafmg.bem.util.*
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import me.flafmg.bem.util.broadcastToPlayers
+import me.flafmg.bem.util.getOnlinePlayers
+import me.flafmg.bem.util.sendMessage
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
-class AllCommand(private val messagesConfig: ConfigManager) : CommandExecutor {
+class AllCommand(messagesConfig: ConfigManager) : BaseCommand("all", messagesConfig) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("bettereventmanager.command.all")) {
-            sendMessage(sender, messagesConfig.getString("messages.system.noPermission"))
-            return true
-        }
-
-        if (args.isEmpty()) {
-            sendUsage(sender)
-            return true
-        }
-
-        when (args[0].lowercase()) {
-            "on" -> handleAllOn(sender)
-            "off" -> handleAllOff(sender)
-            else -> sendUsage(sender)
-        }
-        genericLog(sender, "/all ${args.joinToString(" ")}", messagesConfig)
-        return true
+    init {
+        baseCommand.withSubcommand(
+            CommandAPICommand("on")
+                .executes(CommandExecutor { sender, args ->
+                    handleAllOn(sender, args)
+                })
+        )
+        baseCommand.withSubcommand(
+            CommandAPICommand("off")
+                .executes(CommandExecutor { sender, args ->
+                    handleAllOff(sender, args)
+                })
+        )
     }
 
-    private fun sendUsage(sender: CommandSender) {
-        sendMessage(sender, messagesConfig.getString("messages.system.invalidUsage"), mutableMapOf("usage" to "/all <on|off>"))
-    }
-
-    private fun handleAllOn(sender: CommandSender) {
-        EventType.entries.filter { it != EventType.HCD && it != EventType.HCK }.forEach {
+    private fun handleAllOn(sender: CommandSender, args: CommandArguments) {
+        EventType.entries.filter { it != EventType.HCD && it != EventType.HCK && it != EventType.MAXPLAYERS && it != EventType.SPECCHATBYPASS && it != EventType.SPECCHATPUBLIC && it != EventType.SPECCHAT }.forEach {
             EventManager.enableEvent(it)
         }
 
         sendMessage(sender, messagesConfig.getString("messages.all.enabled.execution"))
-        broadcastToPlayers(messagesConfig.getString("messages.all.enabled.announce"), getOnlinePlayers())
+
+        if(!super.hasSilent)
+            broadcastToPlayers(messagesConfig.getString("messages.all.enabled.announce"), getOnlinePlayers())
     }
 
-    private fun handleAllOff(sender: CommandSender) {
-        EventType.entries.filter { it != EventType.HCD && it != EventType.HCK && it != EventType.MAXPLAYERS }.forEach {
+    private fun handleAllOff(sender: CommandSender, args: CommandArguments) {
+        EventType.entries.filter { it != EventType.HCD && it != EventType.HCK && it != EventType.MAXPLAYERS && it != EventType.SPECCHATBYPASS && it != EventType.SPECCHATPUBLIC && it != EventType.SPECCHAT}.forEach {
             EventManager.disableEvent(it)
         }
 
         sendMessage(sender, messagesConfig.getString("messages.all.disabled.execution"))
-        broadcastToPlayers(messagesConfig.getString("messages.all.disabled.announce"), getOnlinePlayers())
+        if(!super.hasSilent)
+            broadcastToPlayers(messagesConfig.getString("messages.all.disabled.announce"), getOnlinePlayers())
     }
-
 }

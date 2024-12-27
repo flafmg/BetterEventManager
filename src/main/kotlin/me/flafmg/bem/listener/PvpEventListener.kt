@@ -16,7 +16,7 @@ class PvpEventListener(private val messagesConfig: ConfigManager) : Listener {
     @EventHandler
     fun onPlayerDamage(event: EntityDamageByEntityEvent) {
         val damager = event.damager
-        if (damager is Player) {
+        if (damager is Player && event.entity is Player) {
             val playerId: UUID = damager.uniqueId
             if (!EventManager.isEventEnabled(EventType.PVP) &&
                 !damager.hasPermission("bettereventmanager.bypass.pvp") &&

@@ -1,32 +1,39 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.StringArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.util.successLog
 import me.flafmg.bem.util.errLog
 import me.flafmg.bem.util.sendMessage
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 
 class ReloadConfigCommand(
     private val mainConfig: ConfigManager,
-    private val messagesConfig: ConfigManager
-) : CommandExecutor {
+    messagesConfig: ConfigManager
+) : BaseCommand("reloadconfig", messagesConfig, hasSilent = false) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
+    init {
+        baseCommand
+            .executes(CommandExecutor { sender, args ->
+                handleReloadConfig(sender, args)
+            })
+    }
+
+    private fun handleReloadConfig(sender: CommandSender, args: CommandArguments) {
         val successMessage = messagesConfig.getString("messages.reloadconfig.execution")!!
         val errorMessage = messagesConfig.getString("messages.reloadconfig.error")!!
 
-        return try {
+        try {
             mainConfig.reload()
             messagesConfig.reload()
-            successLog("Configuração recarregada com sucesso.")
+            successLog("Configuration reloaded sucessfully")
             sendMessage(sender, successMessage)
-            true
         } catch (e: Exception) {
-            errLog("Erro ao recarregar a configuração: ${e.message}")
+            errLog("Error reloading configuration ${e.message}")
             sendMessage(sender, errorMessage)
-            false
         }
     }
 }

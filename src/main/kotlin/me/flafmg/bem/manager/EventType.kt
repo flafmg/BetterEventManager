@@ -7,12 +7,15 @@ enum class EventType {
     DROP,
     PICKUP,
     DAMAGE,
+    INTERACT,
+
     PVM,
     HCK,
     HCD,
-    INTERACT,
-    MAXPLAYERS,
+
     SPECCHAT,
     SPECCHATBYPASS,
-    SPECCHATPUBLIC
+    SPECCHATPUBLIC,
+
+    MAXPLAYERS,
 }

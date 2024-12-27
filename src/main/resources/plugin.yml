@@ -1,86 +1,11 @@
 name: BetterEventManager
-version: @build.date@
+version: ${build.version}
 main: me.flafmg.bem.BetterEventManager
 api-version: '1.16'
 prefix: BEM
 authors: [ flafmg ]
 description: A event manager plugin to enchance your videos/strams!
 
-commands:
-  status:
-    description: Shows the status of events and bypass players.
-    usage: /status [event]
-  build:
-    description: Toggles build mode for players.
-    usage: /build
-  chat:
-    description: Toggles chat mode for players.
-    usage: /chat
-  damage:
-    description: Toggles damage mode for players.
-    usage: /damage
-  drop:
-    description: Toggles item drop mode for players.
-    usage: /drop
-  hcd:
-    description: Toggles hardcore death mode for players.
-    usage: /hcd
-    aliases:
-      - hardcoredeath
-  hck:
-    description: Toggles hardcore kick mode for players.
-    usage: /hck
-    aliases:
-      - hardcorekick
-  pickup:
-    description: Toggles item pickup mode for players.
-    usage: /pickup
-  pvp:
-    description: Toggles PvP mode for players.
-    usage: /pvp
-  pvm:
-    description: Toggles PvM mode for players.
-    usage: /pvm
-  setspec:
-    description: Sets a player as a spectator.
-    usage: /setspec <player> [-s]
-    aliases:
-      - matar
-  revive:
-    description: Revives a spectator player.
-    usage: /revive <player> [-s]
-    aliases:
-      - reviver
-  chatclear:
-    description: Clears the chat for all players.
-    usage: /chatclear [-s]
-  dropclear:
-    description: Clears all dropped items in the world.
-    usage: /dropclear [-s]
-  smite:
-    description: Strikes a player with lightning without causing damage.
-    usage: /smite <player> [-s]
-  glow:
-    description: Applies a glowing effect to a player with an optional color.
-    usage: /glow <player> [color] [-s]
-  all:
-    description: Toggles all event modes for players.
-    usage: /all
-  maxplayers:
-    description: Manages the maximum number of players.
-    usage: /maxplayers <on|off|get|set> [count] [-s]
-  reloadconfig:
-    description: Reloads the config.
-    usage: /reloadconfig
-  interact:
-    description: Allows player to interact with the world.
-    usage: /interact
-  removeallbypass:
-    description: Remove all bypass permissions from a player or all players.
-    usage: /removeallbypass <player/*>
-    aliases:
-      - rab
-      - removeAdded
 
 permissions:
   bettereventmanager.command.build:

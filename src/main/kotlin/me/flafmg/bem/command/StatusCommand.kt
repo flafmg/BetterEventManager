@@ -1,33 +1,39 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.BypassManager
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.manager.EventManager
 import me.flafmg.bem.manager.EventType
 import me.flafmg.bem.util.sendMessage
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 
-class StatusCommand(
-    private val messagesConfig: ConfigManager
-) : CommandExecutor {
+class StatusCommand(messagesConfig: ConfigManager) : BaseCommand("status", messagesConfig, hasSilent = false) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (args.isEmpty()) {
+    init {
+        baseCommand.withArguments(eventTypeArgument("eventType").setOptional(true))
+            .executes(CommandExecutor { sender, args ->
+                handleStatus(sender, args)
+            })
+    }
+
+    private fun handleStatus(sender: CommandSender, args: CommandArguments) {
+        val eventTypeArg = args.get("eventType") as? EventType
+        print(eventTypeArg)
+        if (eventTypeArg == null) {
             showAllEventsStatus(sender)
         } else {
-            val eventType = EventType.valueOf(args[0].uppercase())
-            showEventBypassStatus(sender, eventType)
+            showEventBypassStatus(sender, eventTypeArg)
         }
-        return true
     }
 
     private fun showAllEventsStatus(sender: CommandSender) {
         val header = messagesConfig.getString("messages.status.header")!!
         sendMessage(sender, header)
 
-        for (eventType in EventType.entries) {
+        for (eventType in EventType.values()) {
             val state = if (EventManager.isEventEnabled(eventType)) {
                 messagesConfig.getString("messages.status.stateOn")!!
             } else {
@@ -66,3 +72,4 @@ class StatusCommand(
         }
     }
 }
+

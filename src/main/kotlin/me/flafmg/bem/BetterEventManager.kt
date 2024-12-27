@@ -1,5 +1,7 @@
 package me.flafmg.bem
 
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
 import me.flafmg.bem.command.*
 import me.flafmg.bem.listener.*
 import me.flafmg.bem.manager.*
@@ -12,17 +14,42 @@ class BetterEventManager : JavaPlugin() {
     lateinit var messagesConfig: ConfigManager
     lateinit var mainConfig: ConfigManager
 
+    override fun onLoad() {
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).silentLogs(false))
+    }
+
     override fun onEnable() {
+        CommandAPI.onEnable()
         warnLog("Loading Better Event Manager")
+
         messagesConfig = ConfigManager(this, "messages.yml")
         mainConfig = ConfigManager(this, "config.yml")
+
         EventManager.initialize(mainConfig)
         BypassManager.initialize(mainConfig)
-        infoLog("registering events and commands")
+        MaxPlayersManager.initialize(mainConfig)
+
+        infoLog("Registering events and commands")
+
         registerEvents()
         registerCommands()
+
         successLog("Better Event Manager loaded")
-        coolText()
+
+        DisplayBrand()
+    }
+
+    override fun onDisable() {
+        warnLog("Disabling Better Event Manager")
+
+        infoLog("Unregistering commands")
+        unregisterCommands()
+
+        if (mainConfig.getBoolean("autoSaveEventChanges") == true) {
+            mainConfig.save();
+        }
+
+        successLog("Better Event Manager disabled, Until next time!")
     }
 
     private fun registerEvents() {
@@ -42,30 +69,62 @@ class BetterEventManager : JavaPlugin() {
     }
 
     private fun registerCommands() {
-        getCommand("build")?.setExecutor(CommandBuilder(EventType.BUILD, messagesConfig, true, true))
-        getCommand("chat")?.setExecutor(ChatCommand(messagesConfig, mainConfig))
-        getCommand("damage")?.setExecutor(CommandBuilder(EventType.DAMAGE, messagesConfig, true, true))
-        getCommand("drop")?.setExecutor(CommandBuilder(EventType.DROP, messagesConfig, true, true))
-        getCommand("hcd")?.setExecutor(CommandBuilder(EventType.HCD, messagesConfig, true, true))
-        getCommand("hck")?.setExecutor(CommandBuilder(EventType.HCK, messagesConfig, true, true))
-        getCommand("pickup")?.setExecutor(CommandBuilder(EventType.PICKUP, messagesConfig, true, true))
-        getCommand("pvp")?.setExecutor(CommandBuilder(EventType.PVP, messagesConfig, true, true))
-        getCommand("pvm")?.setExecutor(CommandBuilder(EventType.PVM, messagesConfig, true, true))
-        getCommand("setspec")?.setExecutor(SetSpecCommand(messagesConfig))
-        getCommand("revive")?.setExecutor(ReviveCommand(messagesConfig))
-        getCommand("chatclear")?.setExecutor(ChatClearCommand(messagesConfig))
-        getCommand("dropclear")?.setExecutor(DropClearCommand(messagesConfig))
-        getCommand("smite")?.setExecutor(SmiteCommand(messagesConfig))
-        getCommand("glow")?.setExecutor(GlowCommand(messagesConfig))
-        getCommand("all")?.setExecutor(AllCommand(messagesConfig))
-        getCommand("maxplayers")?.setExecutor(MaxPlayersCommand(messagesConfig))
-        getCommand("interact")?.setExecutor(CommandBuilder(EventType.INTERACT, messagesConfig, true, true))
-        getCommand("reloadconfig")?.setExecutor(ReloadConfigCommand(mainConfig, messagesConfig))
-        getCommand("status")?.setExecutor(StatusCommand(messagesConfig))
-        getCommand("removeallbypass")?.setExecutor(RemoveAllBypassCommand(messagesConfig))
+        AllCommand(messagesConfig).register()
+        ChatClearCommand(messagesConfig).register()
+        ChatCommand(messagesConfig, mainConfig).register()
+        DropClearCommand(messagesConfig).register()
+        GlowCommand(messagesConfig).register()
+        MaxPlayersCommand(messagesConfig).register()
+        ReloadConfigCommand(mainConfig, messagesConfig).register()
+        RemoveAllBypassCommand(messagesConfig).register()
+        ReviveCommand(messagesConfig).register()
+        SetSpecCommand(messagesConfig).register()
+        SmiteCommand(messagesConfig).register()
+        StatusCommand(messagesConfig).register()
+        StickCommand(messagesConfig).register()
+        ToggleSpecChatCommand(messagesConfig).register()
+
+        BaseEventCommand.buildCommand(EventType.BUILD, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.PVP, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.CHAT, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.DROP, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.PICKUP, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.DAMAGE, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.INTERACT, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.PVM, messagesConfig).register()
+        BaseEventCommand.buildCommand(EventType.HCK, messagesConfig, aliases = listOf("HardCoreKick")).register()
+        BaseEventCommand.buildCommand(EventType.HCD, messagesConfig, aliases = listOf("HardCoreDeath")).register()
     }
 
-    private fun coolText() {
+    private fun unregisterCommands() {
+        AllCommand(messagesConfig).unregister()
+        ChatClearCommand(messagesConfig).unregister()
+        ChatCommand(messagesConfig, mainConfig).unregister()
+        DropClearCommand(messagesConfig).unregister()
+        GlowCommand(messagesConfig).unregister()
+        MaxPlayersCommand(messagesConfig).unregister()
+        ReloadConfigCommand(mainConfig, messagesConfig).unregister()
+        RemoveAllBypassCommand(messagesConfig).unregister()
+        ReviveCommand(messagesConfig).unregister()
+        SetSpecCommand(messagesConfig).unregister()
+        SmiteCommand(messagesConfig).unregister()
+        StatusCommand(messagesConfig).unregister()
+        StickCommand(messagesConfig).unregister()
+        ToggleSpecChatCommand(messagesConfig).unregister()
+
+        BaseEventCommand.buildCommand(EventType.BUILD, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.PVP, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.CHAT, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.DROP, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.PICKUP, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.DAMAGE, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.INTERACT, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.PVM, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.HCK, messagesConfig).unregister()
+        BaseEventCommand.buildCommand(EventType.HCD, messagesConfig).unregister()
+    }
+
+    private fun DisplayBrand() {
         val version = description.version
         val msg: String =   "\u001B[31m  ___ ___ \u001B[33m__  __ \u001B[0m\n" +
                 "\u001B[31m | _ ) __|\u001B[33m  \\/  | \u001B[0m\n" +

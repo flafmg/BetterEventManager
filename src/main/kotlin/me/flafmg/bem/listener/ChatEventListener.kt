@@ -5,22 +5,23 @@ import me.flafmg.bem.util.sendEventBlockedMessages
 import me.flafmg.bem.util.*
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import java.util.UUID
 
 class ChatEventListener(private val messagesConfig: ConfigManager, private val mainConfig: ConfigManager) : Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerChat(event: AsyncPlayerChatEvent) {
         val player = event.player
         val playerId: UUID = player.uniqueId
         val spectatorChatPrefix = mainConfig.getString("spectatorChatPrefix") ?: ""
 
         if (SpectatorManager.isSpectator(playerId)) {
-            val allowSpectatorsChat = mainConfig.getBoolean("allowSpectatorsChat") ?: true
-            val allowSpectatorsPrivateChat = mainConfig.getBoolean("allowSpectatorsPrivateChat") ?: false
-            val allowSpectatorsChatBypass = mainConfig.getBoolean("allowSpectatorsChatBypass") ?: false
+            val allowSpectatorsChat = EventManager.isEventEnabled(EventType.SPECCHAT)
+            val allowSpectatorsPrivateChat = EventManager.isEventEnabled(EventType.SPECCHATPUBLIC)
+            val allowSpectatorsChatBypass = EventManager.isEventEnabled(EventType.SPECCHATBYPASS)
 
             if (!allowSpectatorsChat) {
                 event.isCancelled = true
@@ -29,14 +30,15 @@ class ChatEventListener(private val messagesConfig: ConfigManager, private val m
             }
 
             if (spectatorChatPrefix.isNotEmpty()) {
-                event.format = "${ colorMessage(spectatorChatPrefix)}${event.format}"
+                event.format = "${colorMessage(spectatorChatPrefix)}${event.format}"
             }
 
             if (allowSpectatorsPrivateChat) {
                 event.recipients.clear()
                 event.recipients.addAll(SpectatorManager.getSpectators().mapNotNull { Bukkit.getPlayer(it) })
+                event.recipients.addAll(Bukkit.getOnlinePlayers().filter { SpectatorManager.canViewSpecChat(it.uniqueId) })
             } else {
-                event.recipients.addAll(Bukkit.getOnlinePlayers().filter { it.hasPermission("bettereventmanager.bypass.specchat") })
+                event.recipients.addAll(Bukkit.getOnlinePlayers())
             }
 
             if (!allowSpectatorsChatBypass && !EventManager.isEventEnabled(EventType.CHAT)) {
@@ -53,5 +55,7 @@ class ChatEventListener(private val messagesConfig: ConfigManager, private val m
                 sendEventBlockedMessages(player, EventType.CHAT, messagesConfig)
             }
         }
+
+        event.recipients.addAll(Bukkit.getOnlinePlayers().filter { SpectatorManager.canViewSpecChat(it.uniqueId) && !SpectatorManager.isSpectator(it.uniqueId) })
     }
 }

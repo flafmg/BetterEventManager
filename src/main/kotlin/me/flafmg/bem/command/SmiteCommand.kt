@@ -1,53 +1,33 @@
 package me.flafmg.bem.command
 
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import dev.jorel.commandapi.executors.CommandExecutor
 import me.flafmg.bem.manager.ConfigManager
 import me.flafmg.bem.util.*
-import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class SmiteCommand(private val messagesConfig: ConfigManager) : CommandExecutor, TabCompleter {
+class SmiteCommand(messagesConfig: ConfigManager) : BaseCommand("smite", messagesConfig) {
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("bettereventmanager.command.smite")) {
-            sendMessage(sender, messagesConfig.getString("messages.system.noPermission"))
-            return true
-        }
+    init {
+        baseCommand.withArguments(EntitySelectorArgument.OnePlayer("targets"))
+            .executes(CommandExecutor { sender, args ->
+                handleSmite(sender, args)
+            })
+    }
 
-        if (args.isEmpty()) {
-            sendUsage(sender)
-            return true
-        }
-
-        val target = Bukkit.getPlayer(args[0])
-        if (target == null) {
-            sendMessage(sender, messagesConfig.getString("messages.system.playerNotFound"))
-            return true
-        }
-
+    private fun handleSmite(sender: CommandSender, args: CommandArguments) {
+        val target = args.get("targets") as Player
         target.world.strikeLightningEffect(target.location)
 
-        sendMessage(sender, messagesConfig.getString("messages.smite.execution"), mutableMapOf("target" to target.name))
+        sendMessage(sender, messagesConfig.getString("messages.smite.execution"), mutableMapOf("targets" to target.name))
         sendMessage(target, messagesConfig.getString("messages.smite.targetMessage"))
-        if (!args.contains("-s")) {
-            broadcastToPlayers(messagesConfig.getString("messages.smite.announce"), getOnlinePlayers(), mutableMapOf("target" to target.name))
+        if (!super.hasSilent) {
+            broadcastToPlayers(messagesConfig.getString("messages.smite.announce"), getOnlinePlayers(), mutableMapOf("targets" to target.name))
         }
 
-        genericLog(sender, "/smite ${args.joinToString(" ")}", messagesConfig)
-        return true
-    }
-
-    private fun sendUsage(sender: CommandSender) {
-        sendMessage(sender, messagesConfig.getString("messages.system.invalidUsage"), mutableMapOf("usage" to "/smite <player> [-s]"))
-    }
-
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<String>): List<String> {
-        if (args.size == 1) {
-            return Bukkit.getOnlinePlayers().map { it.name }
-        }
-        return emptyList()
+        genericLog(sender, "smite ${target.name}", messagesConfig)
     }
 }
