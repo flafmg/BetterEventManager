@@ -17,6 +17,6 @@ class BemCommand(private val plugin: BetterEventManager) : BaseCommand("bem", pl
 
     private fun handleBem(sender: CommandSender, args: CommandArguments) {
         val version = plugin.description.version
-        sendMessage(sender, "&bBetterEventManager made by &6@flaffymg&b, version: &6$version")
+        sendMessage(sender, "&bBetterEventManager made by &6@flaffymg&b, version: &6$version. &9&nhttps://github.com/flafmg/BetterEventManager")
     }
 }

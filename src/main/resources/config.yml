@@ -3,8 +3,6 @@ specJoinWhenFull: false  # Permitir que jogadores entrem como espectadores quand
 
 maxPlayers: 10
 
-hardcoreDropItems: true # Dropar itens ao morrer no modo hardcore
-
 #lista de mobs que sao ignorados pelo pvm
 pvmWhiteList:
   # - "ZOMBIE" [exemplo]

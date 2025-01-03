@@ -13,7 +13,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.entity.Player
 
-class HardcoreDeathListener(private val messagesConfig: ConfigManager, private val mainConfig: ConfigManager) : Listener {
+class HardcoreDeathListener(private val messagesConfig: ConfigManager) : Listener {
 
     @EventHandler
     fun onPlayerDamage(event: EntityDamageEvent) {
@@ -28,24 +28,34 @@ class HardcoreDeathListener(private val messagesConfig: ConfigManager, private v
                 event.isCancelled = true
                 val playerLocation = player.getLocation();
 
-                if(playerLocation.y < 0){
+                if (playerLocation.y < 0) {
                     player.teleport(playerLocation.world!!.spawnLocation)
                 }
-                if(mainConfig.getBoolean("hardcoreDropItems")!!){
+
+                val keepInventory = player.world.getGameRuleValue("keepInventory")?.toBoolean() ?: false
+
+                if (!keepInventory) {
                     player.inventory.contents.forEach {
-                        if(it != null){
-                            player.world.dropItemNaturally(playerLocation, it)
+                        if (it != null) {
+                            player.world.dropItemNaturally(player.location, it)
                         }
                     }
                     player.inventory.armorContents.forEach {
-                        if(it != null){
-                            player.world.dropItemNaturally(playerLocation, it)
+                        if (it != null) {
+                            player.world.dropItemNaturally(player.location, it)
                         }
                     }
+                    player.inventory.clear()
                 }
 
-                SpectatorManager.addPlayer(player.uniqueId)
-                broadcastToPlayers(messagesConfig.getString("messages.system.eliminationMessage"), getOnlinePlayers(), mutableMapOf("player" to player.name))
+                if (SpectatorManager.isSpectator(player.uniqueId)) {
+                    SpectatorManager.addPlayer(player.uniqueId)
+                    broadcastToPlayers(
+                        messagesConfig.getString("messages.system.eliminationMessage"),
+                        getOnlinePlayers(),
+                        mutableMapOf("player" to player.name)
+                    )
+                }
             }
         }
     }

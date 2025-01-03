@@ -58,7 +58,7 @@ class BetterEventManager : JavaPlugin() {
         server.pluginManager.registerEvents(ChatEventListener(messagesConfig, mainConfig), this)
         server.pluginManager.registerEvents(DamageEventListener(messagesConfig), this)
         server.pluginManager.registerEvents(DropEventListener(messagesConfig), this)
-        server.pluginManager.registerEvents(HardcoreDeathListener(messagesConfig, mainConfig), this)
+        server.pluginManager.registerEvents(HardcoreDeathListener(messagesConfig), this)
         server.pluginManager.registerEvents(HardcoreKickListener(messagesConfig), this)
         server.pluginManager.registerEvents(LogoutEventListener(mainConfig), this)
         server.pluginManager.registerEvents(PickupEventListener(messagesConfig), this)
