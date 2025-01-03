@@ -5,7 +5,7 @@ object MaxPlayersManager {
 
     fun initialize(config: ConfigManager) {
         configManager = config
-        maxPlayers = configManager.getInt("max_players") ?: 0
+        maxPlayers = configManager.getInt("maxPlayers") ?: 0
     }
 
     private var maxPlayers: Int = 0
@@ -13,7 +13,7 @@ object MaxPlayersManager {
     fun setMaxPlayers(count: Int) {
         maxPlayers = count
         if (configManager.getBoolean("autoSaveEventChanges") == true) {
-            configManager.set("max_players", count)
+            configManager.set("maxPlayers", count)
             configManager.save()
         }
     }

@@ -1,7 +1,9 @@
 spectatorChatPrefix: "&7[&cSpec&7] &f"  # Prefixo do chat de espectadores
 specJoinWhenFull: false  # Permitir que jogadores entrem como espectadores quando o servidor estiver cheio pelo /maxplayers
 
-max_players: 10
+maxPlayers: 10
+
+hardcoreDropItems: true # Dropar itens ao morrer no modo hardcore
 
 #lista de mobs que sao ignorados pelo pvm
 pvmWhiteList:

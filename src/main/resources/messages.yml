@@ -211,6 +211,7 @@ messages:
     kickMessage: "&cO servidor atingiu o número máximo de jogadores."
     spectatorJoinMessage: "&7Você entrou como espectador."
 
+
   all:
     enabled:
       execution: "&aVocê ativou todos os eventos."
@@ -218,6 +219,14 @@ messages:
     disabled:
       execution: "&cVocê desativou todos os eventos."
       announce: "&bSERVER &f| Todos os eventos foram &cdesativados&f."
+    added:
+      execution: "&aVocê adicionou &6{targets}&a a todos os eventos."
+      announce: "&bSERVER &f| &6{targets}&f foi adicionado a todos os eventos."
+      targetMessage: "&aVocê foi adicionado a todos os eventos."
+    removed:
+      execution: "&cVocê removeu &6{targets}&c de todos os eventos."
+      announce: "&bSERVER &f| &6{targets}&f foi removido de todos os eventos."
+      targetMessage: "&cVocê foi removido de todos os eventos."
 
   setspec:
     execution: "&aVocê colocou &6{targets}&a no modo espectador."

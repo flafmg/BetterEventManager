@@ -58,7 +58,7 @@ class BetterEventManager : JavaPlugin() {
         server.pluginManager.registerEvents(ChatEventListener(messagesConfig, mainConfig), this)
         server.pluginManager.registerEvents(DamageEventListener(messagesConfig), this)
         server.pluginManager.registerEvents(DropEventListener(messagesConfig), this)
-        server.pluginManager.registerEvents(HardcoreDeathListener(messagesConfig), this)
+        server.pluginManager.registerEvents(HardcoreDeathListener(messagesConfig, mainConfig), this)
         server.pluginManager.registerEvents(HardcoreKickListener(messagesConfig), this)
         server.pluginManager.registerEvents(LogoutEventListener(mainConfig), this)
         server.pluginManager.registerEvents(PickupEventListener(messagesConfig), this)
@@ -94,6 +94,8 @@ class BetterEventManager : JavaPlugin() {
         BaseEventCommand.buildCommand(EventType.PVM, messagesConfig).register()
         BaseEventCommand.buildCommand(EventType.HCK, messagesConfig, aliases = listOf("HardCoreKick")).register()
         BaseEventCommand.buildCommand(EventType.HCD, messagesConfig, aliases = listOf("HardCoreDeath")).register()
+
+        BemCommand(this).register()
     }
 
     private fun unregisterCommands() {
@@ -122,6 +124,8 @@ class BetterEventManager : JavaPlugin() {
         BaseEventCommand.buildCommand(EventType.PVM, messagesConfig).unregister()
         BaseEventCommand.buildCommand(EventType.HCK, messagesConfig).unregister()
         BaseEventCommand.buildCommand(EventType.HCD, messagesConfig).unregister()
+
+        BemCommand(this).unregister()
     }
 
     private fun DisplayBrand() {
@@ -131,7 +135,8 @@ class BetterEventManager : JavaPlugin() {
                 "\u001B[31m | _ \\ _|\u001B[33m| |\\/| | \u001B[0m\n" +
                 "\u001B[31m |___/___|\u001B[33m_|  |_| \u001B[0m\n" +
                 "\u001B[31m Better Event \u001B[33mManager \u001B[0m\n" +
-                "\u001B[0m v:\u001B[34m $version  \u001B[0m\n"
+                "\u001B[0m v:\u001B[34m $version  \u001B[0m\n" +
+                "\u001B[0m by: \u001B[36m@flaffymg \u001B[0m\n"
         msg.split("\n").forEach { line -> server.logger.info(line) }
     }
 }

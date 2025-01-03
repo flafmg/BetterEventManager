@@ -7,12 +7,13 @@ import me.flafmg.bem.manager.EventType
 import me.flafmg.bem.manager.SpectatorManager
 import me.flafmg.bem.util.broadcastToPlayers
 import me.flafmg.bem.util.getOnlinePlayers
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.entity.Player
 
-class HardcoreDeathListener(private val messagesConfig: ConfigManager) : Listener {
+class HardcoreDeathListener(private val messagesConfig: ConfigManager, private val mainConfig: ConfigManager) : Listener {
 
     @EventHandler
     fun onPlayerDamage(event: EntityDamageEvent) {
@@ -25,6 +26,24 @@ class HardcoreDeathListener(private val messagesConfig: ConfigManager) : Listene
             val finalHealth = player.health - event.finalDamage
             if (finalHealth <= 0) {
                 event.isCancelled = true
+                val playerLocation = player.getLocation();
+
+                if(playerLocation.y < 0){
+                    player.teleport(playerLocation.world!!.spawnLocation)
+                }
+                if(mainConfig.getBoolean("hardcoreDropItems")!!){
+                    player.inventory.contents.forEach {
+                        if(it != null){
+                            player.world.dropItemNaturally(playerLocation, it)
+                        }
+                    }
+                    player.inventory.armorContents.forEach {
+                        if(it != null){
+                            player.world.dropItemNaturally(playerLocation, it)
+                        }
+                    }
+                }
+
                 SpectatorManager.addPlayer(player.uniqueId)
                 broadcastToPlayers(messagesConfig.getString("messages.system.eliminationMessage"), getOnlinePlayers(), mutableMapOf("player" to player.name))
             }

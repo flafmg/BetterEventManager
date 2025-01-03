@@ -16,7 +16,6 @@ class HardcoreKickListener(private val messagesConfig: ConfigManager) : Listener
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
         val player = event.entity
-        print("hoi" + EventManager.isEventEnabled(EventType.HCK))
         if (EventManager.isEventEnabled(EventType.HCK) &&
             !BypassManager.hasBypass(EventType.HCK, player.uniqueId)
             && !player.hasPermission("betterevent.bypass.hck")) {
