@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import java.util.UUID
 
 class BuildEventListener(private val messagesConfig: ConfigManager) : Listener {
@@ -33,6 +34,11 @@ class BuildEventListener(private val messagesConfig: ConfigManager) : Listener {
 
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
+        handleBlockEvent(event.player, EventType.BUILD, event)
+    }
+
+    @EventHandler
+    fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
         handleBlockEvent(event.player, EventType.BUILD, event)
     }
 }
