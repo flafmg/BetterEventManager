@@ -7,7 +7,7 @@ import me.flafmg.bem.BetterEventManager
 import me.flafmg.bem.util.sendMessage
 import org.bukkit.command.CommandSender
 
-class BemCommand(private val plugin: BetterEventManager) : BaseCommand("bem", plugin.messagesConfig, aliases = listOf("BetterEventManager"), hasSilent = false) {
+class BemCommand(private val plugin: BetterEventManager) : BaseCommand("bem", plugin.messagesConfig, aliases = listOf("BetterEventManager"), hasSilent = false, hasPermission = false) {
 
     init {
         baseCommand.executes(CommandExecutor { sender, args ->

@@ -12,14 +12,19 @@ open class BaseCommand(
     protected val messagesConfig: ConfigManager,
     aliases: List<String> = emptyList(),
     val hasSilent: Boolean = true,
+    val hasPermission: Boolean = true
 ) {
     protected val baseCommand: CommandAPICommand = CommandAPICommand(commandName)
         .withAliases(*aliases.toTypedArray())
-        .withPermission("bettereventmanager.command.$commandName")
+        .apply {
+            if (hasPermission) {
+                withPermission("bettereventmanager.command.$commandName")
+            }
+        }
 
     open fun register() {
         infoLog(" Registering command: $commandName")
-        if(hasSilent) {
+        if (hasSilent) {
             baseCommand.withArguments(BooleanArgument("silent").setOptional(true))
         }
         baseCommand.register()
