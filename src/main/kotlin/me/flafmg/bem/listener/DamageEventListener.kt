@@ -9,6 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import java.util.UUID
 
 class DamageEventListener(private val messagesConfig: ConfigManager) : Listener {
@@ -18,11 +19,21 @@ class DamageEventListener(private val messagesConfig: ConfigManager) : Listener 
         val entity = event.entity
         if (entity is Player) {
             val playerId: UUID = entity.uniqueId
-            if (!EventManager.isEventEnabled(EventType.DAMAGE) &&
+            val isDamageEnabled = EventManager.isEventEnabled(EventType.DAMAGE)
+            val isPvpEnabled = EventManager.isEventEnabled(EventType.PVP)
+
+            if (!isDamageEnabled &&
                 !entity.hasPermission("bettereventmanager.bypass.damage") &&
                 !BypassManager.hasBypass(EventType.DAMAGE, playerId)) {
 
-                event.isCancelled = true
+                if (event is EntityDamageByEntityEvent && event.damager is Player && isPvpEnabled) {
+                    val initialHealth = entity.health
+                    event.isCancelled = false
+                    entity.health = initialHealth
+                } else {
+                    event.isCancelled = true
+                }
+
             }
         }
     }

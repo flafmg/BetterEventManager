@@ -83,6 +83,8 @@ class BetterEventManager : JavaPlugin() {
         StatusCommand(messagesConfig).register()
         StickCommand(messagesConfig).register()
         ToggleSpecChatCommand(messagesConfig).register()
+        RegenCommand(messagesConfig).register()
+        BemHelpCommand(messagesConfig).register()
 
         BaseEventCommand.buildCommand(EventType.BUILD, messagesConfig).register()
         BaseEventCommand.buildCommand(EventType.PVP, messagesConfig).register()
@@ -113,6 +115,8 @@ class BetterEventManager : JavaPlugin() {
         StatusCommand(messagesConfig).unregister()
         StickCommand(messagesConfig).unregister()
         ToggleSpecChatCommand(messagesConfig).unregister()
+        RegenCommand(messagesConfig).unregister()
+        BemHelpCommand(messagesConfig).unregister()
 
         BaseEventCommand.buildCommand(EventType.BUILD, messagesConfig).unregister()
         BaseEventCommand.buildCommand(EventType.PVP, messagesConfig).unregister()

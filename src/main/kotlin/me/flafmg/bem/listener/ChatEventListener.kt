@@ -21,7 +21,6 @@ class ChatEventListener(private val messagesConfig: ConfigManager, private val m
         if (SpectatorManager.isSpectator(playerId)) {
             val allowSpectatorsChat = EventManager.isEventEnabled(EventType.SPECCHAT)
             val allowSpectatorsPrivateChat = EventManager.isEventEnabled(EventType.SPECCHATPUBLIC)
-            val allowSpectatorsChatBypass = EventManager.isEventEnabled(EventType.SPECCHATBYPASS)
 
             if (!allowSpectatorsChat) {
                 event.isCancelled = true
@@ -36,15 +35,8 @@ class ChatEventListener(private val messagesConfig: ConfigManager, private val m
             if (allowSpectatorsPrivateChat) {
                 event.recipients.clear()
                 event.recipients.addAll(SpectatorManager.getSpectators().mapNotNull { Bukkit.getPlayer(it) })
-                event.recipients.addAll(Bukkit.getOnlinePlayers().filter { SpectatorManager.canViewSpecChat(it.uniqueId) })
             } else {
                 event.recipients.addAll(Bukkit.getOnlinePlayers())
-            }
-
-            if (!allowSpectatorsChatBypass && !EventManager.isEventEnabled(EventType.CHAT)) {
-                event.isCancelled = true
-                sendEventBlockedMessages(player, EventType.CHAT, messagesConfig)
-                return
             }
         } else {
             if (!EventManager.isEventEnabled(EventType.CHAT) &&

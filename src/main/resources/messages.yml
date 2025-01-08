@@ -259,6 +259,10 @@ messages:
   stick:
     execution: "&aVocê recebeu um stick com {enchantment} nível {level}."
 
+  regen:
+    execution: "&aVocê regenerou &6{targets}&a."
+    targetMessage: "&aVocê foi regenerado."
+
   status:
     header: "&bSERVER &f| Estado dos eventos"
     eventItem: "&7- {event} {state} | {nbypass} jogadores adicionados"
@@ -280,6 +284,30 @@ messages:
   reloadconfig:
     execution: "&aA configuração foi recarregada com sucesso."
     error: "&cErro ao recarregar a configuração."
+
+  help:
+    execution: |
+      &aComandos do Better Event Manager:
+      &6/bem &f- Mostra informações do plugin.
+      &6/bemhelp &f- Mostra esta mensagem de ajuda.
+      &6/all on|off &f- Ativa ou desativa todos os eventos.
+      &6/all add|remove <targets> [-s] &f- Adiciona ou remove jogadores de todos os eventos.
+      &6/chat on|off &f- Ativa ou desativa o chat.
+      &6/chat specs on|off|private|public &f- Gerencia as configurações do chat de espectadores.
+      &6/chat bypass on|off &f- Gerencia as configurações de bypass do chat.
+      &6/chatclear &f- Limpa o chat.
+      &6/dropclear &f- Limpa os itens dropados.
+      &6/glow set|remove <targets> <color> [-s] &f- Define ou remove o efeito de brilho.
+      &6/maxplayers on|off|get|set <count> [-s] &f- Gerencia as configurações de jogadores máximos.
+      &6/regen <targets> &f- Regenera os jogadores especificados.
+      &6/reloadconfig &f- Recarrega os arquivos de configuração.
+      &6/removeallbypass event|player|all &f- Remove todas as permissões de bypass.
+      &6/revive <targets> &f- Revive os jogadores especificados.
+      &6/setspec <targets> &f- Define os jogadores especificados como espectadores.
+      &6/smite <target> &f- Lança um raio no jogador especificado.
+      &6/status [eventType] &f- Mostra o status dos eventos e bypasses.
+      &6/stick <enchantment> [level] &f- Dá um bastão com o encantamento especificado.
+      &6/togglespecchat &f- Ativa ou desativa a visualização do chat dos spectadores.
 
   system:
     noPermission: "&cVocê não tem permissão para fazer isso."
