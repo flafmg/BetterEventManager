@@ -45,16 +45,19 @@ class HardcoreDeathListener(private val messagesConfig: ConfigManager) : Listene
                             player.world.dropItemNaturally(player.location, it)
                         }
                     }
-                    player.inventory.clear()
                 }
+                player.inventory.clear()
 
-                if (SpectatorManager.isSpectator(player.uniqueId)) {
+                if (!SpectatorManager.isSpectator(player.uniqueId)) {
                     SpectatorManager.addPlayer(player.uniqueId)
                     broadcastToPlayers(
                         messagesConfig.getString("messages.system.eliminationMessage"),
                         getOnlinePlayers(),
                         mutableMapOf("player" to player.name)
                     )
+                } else{
+                    player.teleport(player.world.spawnLocation)
+                    player.health = 20.0
                 }
             }
         }
