@@ -30,7 +30,7 @@ class ReviveCommand(messagesConfig: ConfigManager) : BaseCommand("revive", messa
         targets.forEach { target ->
             if (!SpectatorManager.isSpectator(target.uniqueId)) {
                 sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"), mutableMapOf("targets" to target.name))
-                return
+                return@forEach
             }
 
             SpectatorManager.removePlayer(target.uniqueId)
