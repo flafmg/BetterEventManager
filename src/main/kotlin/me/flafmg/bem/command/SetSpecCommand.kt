@@ -30,21 +30,43 @@ class SetSpecCommand(messagesConfig: ConfigManager) : BaseCommand("setspec", mes
             return
         }
 
+        val allSpectators = targets.all { SpectatorManager.isSpectator(it.uniqueId) }
+        if (allSpectators) {
+            val targetNames = targets.joinToString(", ") { it.name }
+            sendMessage(
+                sender,
+                messagesConfig.getString("messages.system.alreadyAdded"),
+                mutableMapOf("targets" to targetNames)
+            )
+            return
+        }
+
+        val addedPlayers = mutableListOf<String>()
         targets.forEach { target ->
-            if (SpectatorManager.isSpectator(target.uniqueId)) {
-                sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("targets" to target.name))
-                return
+            if (!SpectatorManager.isSpectator(target.uniqueId)) {
+                SpectatorManager.addPlayer(target.uniqueId)
+                addedPlayers.add(target.name)
+                sendMessage(target, messagesConfig.getString("messages.setspec.targetMessage"))
             }
+        }
 
-            SpectatorManager.addPlayer(target.uniqueId)
-            sendMessage(sender, messagesConfig.getString("messages.setspec.execution"), mutableMapOf("targets" to target.name))
-            sendMessage(target, messagesConfig.getString("messages.setspec.targetMessage"))
+        if (addedPlayers.isNotEmpty()) {
+            val targetNames = addedPlayers.joinToString(", ")
+            sendMessage(
+                sender,
+                messagesConfig.getString("messages.setspec.execution"),
+                mutableMapOf("targets" to targetNames)
+            )
             if (!super.hasSilent) {
-                broadcastToPlayers(messagesConfig.getString("messages.setspec.announce"),
-                    getOnlinePlayers(), mutableMapOf("targets" to target.name))
+                broadcastToPlayers(
+                    messagesConfig.getString("messages.setspec.announce"),
+                    getOnlinePlayers(),
+                    mutableMapOf("targets" to targetNames)
+                )
             }
-
-            genericLog(sender, "setspec ${target.name}", messagesConfig)
+            addedPlayers.forEach { targetName ->
+                genericLog(sender, "setspec $targetName", messagesConfig)
+            }
         }
     }
 }

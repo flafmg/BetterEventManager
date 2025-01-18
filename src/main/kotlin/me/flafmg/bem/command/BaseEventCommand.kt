@@ -96,26 +96,32 @@ open class BaseEventCommand(
             sendMessage(sender, messagesConfig.getString("messages.system.playerNotFound"))
             return
         }
-        val targetNames = targets.joinToString(", ") { it.name }
 
+        val allBypassed = targets.all { BypassManager.hasBypass(eventType, it.uniqueId) }
+        if (allBypassed) {
+            val targetNames = targets.joinToString(", ") { it.name }
+            sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"), mutableMapOf("targets" to targetNames))
+            return
+        }
+
+        val addedPlayers = mutableListOf<Player>()
         targets.forEach { target ->
-            if (BypassManager.hasBypass(eventType, target.uniqueId)) {
-                sendMessage(sender, messagesConfig.getString("messages.system.alreadyAdded"))
-                return
+            if (!BypassManager.hasBypass(eventType, target.uniqueId)) {
+                BypassManager.addPlayer(eventType, target.uniqueId)
+                addedPlayers.add(target)
+                sendMessage(target, messagesConfig.getString("messages.${eventType.name.lowercase()}.added.targetMessage"))
             }
-
-            BypassManager.addPlayer(eventType, target.uniqueId)
         }
 
-        sendMessage(sender, messagesConfig.getString("messages.${eventType.name.lowercase()}.added.execution"), mutableMapOf("targets" to targetNames))
-        targets.forEach { target ->
-            sendMessage(target, messagesConfig.getString("messages.${eventType.name.lowercase()}.added.targetMessage"))
-        }
-        if (!isSilent(args)) {
-            broadcastToPlayers(messagesConfig.getString("messages.${eventType.name.lowercase()}.added.announce"), getOnlinePlayers(), mutableMapOf("targets" to targetNames))
-        }
-        targets.forEach { target ->
-            targetEventLog(sender, target, eventType, "add", messagesConfig)
+        if (addedPlayers.isNotEmpty()) {
+            val targetNames = addedPlayers.joinToString(", ") { it.name }
+            sendMessage(sender, messagesConfig.getString("messages.${eventType.name.lowercase()}.added.execution"), mutableMapOf("targets" to targetNames))
+            if (!isSilent(args)) {
+                broadcastToPlayers(messagesConfig.getString("messages.${eventType.name.lowercase()}.added.announce"), getOnlinePlayers(), mutableMapOf("targets" to targetNames))
+            }
+            addedPlayers.forEach { target ->
+                targetEventLog(sender, target, eventType, "add", messagesConfig)
+            }
         }
     }
 
@@ -125,26 +131,32 @@ open class BaseEventCommand(
             sendMessage(sender, messagesConfig.getString("messages.system.playerNotFound"))
             return
         }
-        val targetNames = targets.joinToString(", ") { it.name }
 
+        val allNotBypassed = targets.all { !BypassManager.hasBypass(eventType, it.uniqueId) }
+        if (allNotBypassed) {
+            val targetNames = targets.joinToString(", ") { it.name }
+            sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"), mutableMapOf("targets" to targetNames))
+            return
+        }
+
+        val removedPlayers = mutableListOf<Player>()
         targets.forEach { target ->
-            if (!BypassManager.hasBypass(eventType, target.uniqueId)) {
-                sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"))
-                return
+            if (BypassManager.hasBypass(eventType, target.uniqueId)) {
+                BypassManager.removePlayer(eventType, target.uniqueId)
+                removedPlayers.add(target)
+                sendMessage(target, messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.targetMessage"))
             }
-
-            BypassManager.removePlayer(eventType, target.uniqueId)
         }
 
-        sendMessage(sender, messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.execution"), mutableMapOf("targets" to targetNames))
-        targets.forEach { target ->
-            sendMessage(target, messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.targetMessage"))
-        }
-        if (!isSilent(args)) {
-            broadcastToPlayers(messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.announce"), getOnlinePlayers(), mutableMapOf("targets" to targetNames))
-        }
-        targets.forEach { target ->
-            targetEventLog(sender, target, eventType, "remove", messagesConfig)
+        if (removedPlayers.isNotEmpty()) {
+            val targetNames = removedPlayers.joinToString(", ") { it.name }
+            sendMessage(sender, messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.execution"), mutableMapOf("targets" to targetNames))
+            if (!isSilent(args)) {
+                broadcastToPlayers(messagesConfig.getString("messages.${eventType.name.lowercase()}.removed.announce"), getOnlinePlayers(), mutableMapOf("targets" to targetNames))
+            }
+            removedPlayers.forEach { target ->
+                targetEventLog(sender, target, eventType, "remove", messagesConfig)
+            }
         }
     }
 

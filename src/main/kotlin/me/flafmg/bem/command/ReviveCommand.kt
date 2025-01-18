@@ -27,25 +27,48 @@ class ReviveCommand(messagesConfig: ConfigManager) : BaseCommand("revive", messa
             return
         }
 
+        val allNotSpectators = targets.all { !SpectatorManager.isSpectator(it.uniqueId) }
+        if (allNotSpectators) {
+            val targetNames = targets.joinToString(", ") { it.name }
+            sendMessage(
+                sender,
+                messagesConfig.getString("messages.system.alreadyRemoved"),
+                mutableMapOf("targets" to targetNames)
+            )
+            return
+        }
+
+        val revivedPlayers = mutableListOf<String>()
         targets.forEach { target ->
-            if (!SpectatorManager.isSpectator(target.uniqueId)) {
-                sendMessage(sender, messagesConfig.getString("messages.system.alreadyRemoved"), mutableMapOf("targets" to target.name))
-                return@forEach
+            if (SpectatorManager.isSpectator(target.uniqueId)) {
+                SpectatorManager.removePlayer(target.uniqueId)
+                val location =
+                    if (sender is Player) sender.location else Bukkit.getWorlds().firstOrNull()?.spawnLocation
+                if (location != null) {
+                    target.teleport(location)
+                }
+                revivedPlayers.add(target.name)
+                sendMessage(target, messagesConfig.getString("messages.revive.targetMessage"))
             }
+        }
 
-            SpectatorManager.removePlayer(target.uniqueId)
-            val location = if (sender is Player) sender.location else Bukkit.getWorlds().firstOrNull()?.spawnLocation
-            if (location != null) {
-                target.teleport(location)
-            }
-
-            sendMessage(sender, messagesConfig.getString("messages.revive.execution"), mutableMapOf("targets" to target.name))
-            sendMessage(target, messagesConfig.getString("messages.revive.targetMessage"))
+        if (revivedPlayers.isNotEmpty()) {
+            val targetNames = revivedPlayers.joinToString(", ")
+            sendMessage(
+                sender,
+                messagesConfig.getString("messages.revive.execution"),
+                mutableMapOf("targets" to targetNames)
+            )
             if (!super.hasSilent) {
-                broadcastToPlayers(messagesConfig.getString("messages.revive.announce"), getOnlinePlayers(), mutableMapOf("targets" to target.name))
+                broadcastToPlayers(
+                    messagesConfig.getString("messages.revive.announce"),
+                    getOnlinePlayers(),
+                    mutableMapOf("targets" to targetNames)
+                )
             }
-
-            genericLog(sender, "revive ${target.name}", messagesConfig)
+            revivedPlayers.forEach { targetName ->
+                genericLog(sender, "revive $targetName", messagesConfig)
+            }
         }
     }
 }

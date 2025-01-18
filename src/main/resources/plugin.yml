@@ -3,8 +3,8 @@ version: ${build.version}
 main: me.flafmg.bem.BetterEventManager
 api-version: '1.16'
 prefix: BEM
-authors: [ flafmg ]
-description: A event manager plugin to enchance your videos/strams!
+authors: [ flaffymg ]
+description: A event manager plugin to enchance your videos/streams!
 
 
 permissions:
